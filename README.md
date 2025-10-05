@@ -1,73 +1,225 @@
-# Welcome to your Lovable project
+# 🍽️ MessMate Smart Hub
 
-## Project info
+<div align="center">
+  <img src="assets/Logo.png" alt="MessMate Smart Hub Logo" width="120" height="120">
+  
+  <h3>A Comprehensive Mess Management System</h3>
+  <p>Streamline your hostel or organization's meal management with smart QR attendance, menu planning, and payment tracking</p>
 
-**URL**: https://lovable.dev/projects/d8135b29-1e81-4b9a-9c78-e068e491f35c
+  ![React](https://img.shields.io/badge/React-18.3.1-blue.svg)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue.svg)
+  ![Firebase](https://img.shields.io/badge/Firebase-12.0.0-orange.svg)
+  ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.11-green.svg)
+  ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+</div>
 
-## How can I edit this code?
+## 🌟 Features
 
-There are several ways of editing your application.
+### 👤 **User Features**
+- **📱 QR Code Attendance**: Mark meal attendance by scanning QR codes or uploading QR images
+- **📅 Weekly Menu Viewing**: Access updated weekly meal menus
+- **💰 Bill Estimation**: Automatic tracking of monthly meal expenses
+- **📝 Feedback System**: Submit feedback and complaints easily
+- **🏖️ Leave Management**: Request leaves for meal deductions
+- **💳 Payment Tracking**: Monitor payment status and history
+- **🔔 Real-time Notifications**: Stay updated with important announcements
 
-**Use Lovable**
+### 👨‍💼 **Admin Features**
+- **👥 User Management**: Add, edit, and remove users
+- **📋 Menu Management**: Create and update weekly meal menus
+- **📊 Attendance Tracking**: Monitor meal attendance across all users
+- **💰 Payment Management**: Track payments and generate reports
+- **🔄 QR Code Generation**: Generate and manage QR codes for attendance
+- **📈 Analytics Dashboard**: Comprehensive reports and statistics
+- **📢 Notifications**: Send announcements to all users
+- **🗂️ Data Export**: Export attendance and payment data
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d8135b29-1e81-4b9a-9c78-e068e491f35c) and start prompting.
+## 🚀 Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: React 18.3.1 with TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **Backend**: Firebase (Firestore, Authentication)
+- **QR Code**: Multiple QR libraries for scanning and generation
+- **Charts**: Recharts for data visualization
+- **State Management**: React Query (TanStack Query)
+- **Build Tool**: Vite
+- **Package Manager**: Bun/NPM
 
-**Use your preferred IDE**
+## 📦 Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js (v18 or higher)
+- Bun or NPM package manager
+- Firebase project with Firestore and Authentication enabled
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Setup Steps
 
-Follow these steps:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Meghraj2004/Mess-Mates-v4.git
+   cd messmate-smart-hub
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. **Install dependencies**
+   ```bash
+   # Using Bun (recommended)
+   bun install
+   
+   # Or using NPM
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. **Firebase Configuration**
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Enable Firestore Database and Authentication
+   - Add your Firebase config to `src/lib/firebase.ts`
+   
+   ```typescript
+   const firebaseConfig = {
+     apiKey: "your-api-key",
+     authDomain: "your-auth-domain",
+     projectId: "your-project-id",
+     storageBucket: "your-storage-bucket",
+     messagingSenderId: "your-sender-id",
+     appId: "your-app-id"
+   };
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. **Start the development server**
+   ```bash
+   # Using Bun
+   bun run dev
+   
+   # Or using NPM
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+5. **Open your browser**
+   Navigate to `http://localhost:5173`
+
+## 🏗️ Project Structure
+
+```
+messmate-smart-hub/
+├── src/
+│   ├── components/        # Reusable UI components
+│   │   ├── ui/           # shadcn/ui components
+│   │   ├── AdminNotifications.tsx
+│   │   ├── FeedbackForm.tsx
+│   │   ├── QRCodeScanner.tsx
+│   │   └── ...
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utility libraries
+│   │   ├── firebase.ts   # Firebase configuration
+│   │   └── utils.ts      # Helper functions
+│   ├── pages/            # Page components
+│   │   ├── Dashboard.tsx
+│   │   ├── AdminDashboard.tsx
+│   │   └── ...
+│   ├── App.tsx           # Main app component
+│   └── main.tsx          # Entry point
+├── assets/               # Static assets
+├── firebase.rules        # Firestore security rules
+└── package.json
 ```
 
-**Edit a file directly in GitHub**
+## 🔧 Configuration
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Admin Setup
+To set up admin users, update the `ADMIN_EMAILS` array in `src/pages/Index.tsx`:
 
-**Use GitHub Codespaces**
+```typescript
+const ADMIN_EMAILS = [
+  'admin1@example.com',
+  'admin2@example.com',
+  'admin3@example.com'
+];
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Firebase Rules
+Update your Firestore security rules using the provided `firestore.rules` file to ensure proper data security.
 
-## What technologies are used for this project?
+## 🎯 Usage
 
-This project is built with:
+### For Users
+1. **Sign up/Login** with your email address
+2. **Dashboard Access** - View your personalized dashboard
+3. **QR Attendance** - Scan QR codes or upload QR images to mark attendance
+4. **Menu Viewing** - Check weekly meal menus
+5. **Leave Requests** - Submit leave requests for meal deductions
+6. **Feedback** - Provide feedback about meals and services
+7. **Payment Tracking** - Monitor your payment status and history
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### For Admins
+1. **Admin Dashboard** - Access comprehensive management tools
+2. **User Management** - Add, edit, or remove users
+3. **Menu Management** - Create and update weekly menus
+4. **QR Generation** - Generate QR codes for attendance
+5. **Reports** - View attendance and payment analytics
+6. **Notifications** - Send announcements to users
 
-## How can I deploy this project?
+## 🏃‍♂️ Available Scripts
 
-Simply open [Lovable](https://lovable.dev/projects/d8135b29-1e81-4b9a-9c78-e068e491f35c) and click on Share -> Publish.
+```bash
+# Development
+bun run dev          # Start development server
+npm run dev
 
-## Can I connect a custom domain to my Lovable project?
+# Build
+bun run build        # Build for production
+npm run build
 
-Yes, you can!
+# Preview
+bun run preview      # Preview production build
+npm run preview
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# Linting
+bun run lint         # Run ESLint
+npm run lint
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙋‍♂️ Support
+
+If you encounter any issues or have questions:
+
+1. Check the [Issues](https://github.com/Meghraj2004/Mess-Mates-v4/issues) page
+2. Create a new issue if your problem isn't already reported
+3. Provide detailed information about the problem
+
+## 🎨 Screenshots
+
+<div align="center">
+  <h3>🏠 Landing Page</h3>
+  <p><em>Clean and modern interface showcasing key features</em></p>
+  
+  <h3>📊 User Dashboard</h3>
+  <p><em>Personalized dashboard with QR attendance, menu viewing, and payment tracking</em></p>
+  
+  <h3>👨‍💼 Admin Dashboard</h3>
+  <p><em>Comprehensive admin panel for managing users, menus, and generating reports</em></p>
+</div>
+
+## 🏆 Team
+
+Developed with ❤️ by the **MessMates Development Team**
+
+---
+
+<div align="center">
+  <p>⭐ Star this repository if you find it helpful!</p>
+  <p>🍽️ Happy Mess Management! 🍽️</p>
+</div>
