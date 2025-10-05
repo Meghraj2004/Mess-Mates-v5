@@ -11,7 +11,8 @@ interface AuthGuardProps {
 const ADMIN_EMAILS = [
   'megharajdandgavhal2004@gmail.com',
   'sohamk5404@gmail.com', 
-  'dandgavhalchetan20@gmail.com'
+  'dandgavhalchetan20@gmail.com',
+  'priyankachitte2005@gmail.com'
 ];
 
 export const AuthGuard = ({ children, requireAdmin = false }: AuthGuardProps) => {

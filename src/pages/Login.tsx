@@ -13,7 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 const ADMIN_EMAILS = [
   'megharajdandgavhal2004@gmail.com',
   'sohamk5404@gmail.com', 
-  'dandgavhalchetan20@gmail.com'
+  'dandgavhalchetan20@gmail.com',
+  'priyankachitte2005@gmail.com'
 ];
 
 export default function Login() {
