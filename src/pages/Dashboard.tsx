@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Utensils,
   Calendar,
@@ -30,12 +31,14 @@ import FeedbackForm from '@/components/FeedbackForm';
 import LeaveRequestForm from '@/components/LeaveRequestForm';
 import { PaymentSection } from '@/components/PaymentSection';
 import { NotificationsPanel } from '@/components/NotificationsPanel';
+import { AnnouncementsView } from '@/components/AnnouncementsView';
 
 import { format, isToday, parseISO } from 'date-fns';
 
 export default function Dashboard() {
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('menu');
   const [scannerActive, setScannerActive] = useState(false);
   const [scannedData, setScannedData] = useState<string | null>(null);
   const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
@@ -227,6 +230,7 @@ export default function Dashboard() {
         title: "Logged out successfully",
         description: "See you next time!",
       });
+      navigate('/login');
     } catch (error) {
       toast({
         variant: "destructive",
@@ -294,88 +298,150 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
-      <header className="bg-background/80 backdrop-blur-sm border-b shadow-card sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Utensils className="h-6 w-6 text-primary" />
-            <img src="/assets/Logo.png" alt="MessMate" className="h-8 w-8" />
-            <span className="font-bold text-xl">MessMates</span>
-          </div>
-          <span className="font-bold text-xl border-2 border-primary rounded-md px-2 py-1">Dashboard</span>
-          <div className="flex items-center gap-4">
-            <span className="text-base font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg shadow-sm border border-primary/30">
-              Welcome, <span className="text-primary">{user?.email}</span>
+      {/* Mobile-Responsive Header */}
+      <header className="bg-background/80 backdrop-blur-sm border-b shadow-card sticky top-0 z-50">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          {/* Top Row - Logo and Title */}
+          <div className="flex justify-between items-center mb-2 sm:mb-0">
+            <div className="flex items-center gap-2">
+              <Utensils className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+              <img src="/assets/Logo.png" alt="MessMate" className="h-6 w-6 sm:h-8 sm:w-8" />
+              <span className="font-bold text-base sm:text-xl">MessMates</span>
+            </div>
+            <span className="hidden sm:inline-block font-bold text-base sm:text-xl border-2 border-primary rounded-md px-2 py-1">
+              Dashboard
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/profile')}
-              className="relative overflow-hidden border-2 border-primary text-primary font-semibold px-4 py-2 rounded-md transition-all duration-300 group hover:bg-primary hover:text-white hover:scale-105 shadow-md"
-            >
-              <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-md"></span>
-              <User className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-[-20deg] group-hover:scale-125" />
-              <span className="relative z-10">Profile</span>
-            </Button>
+            
+            {/* Mobile Menu Icons */}
+            <div className="sm:hidden flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="p-2"
+              >
+                <User className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="p-2"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="relative overflow-hidden border-2 border-primary text-primary font-semibold px-4 py-2 rounded-md transition-all duration-300 group hover:bg-primary hover:text-white hover:scale-105 shadow-md"
-            >
-              <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-md"></span>
-              <LogOut className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-[-20deg] group-hover:scale-125" />
-              <span className="relative z-10">Logout</span>
-            </Button>
+          {/* Bottom Row - User Info and Buttons (Desktop) */}
+          <div className="hidden sm:flex items-center justify-between gap-4">
+            <span className="text-sm sm:text-base font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg shadow-sm border border-primary/30 truncate max-w-xs">
+              Welcome, <span className="text-primary truncate">{user?.email}</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="relative overflow-hidden border-2 border-primary text-primary font-semibold px-4 py-2 rounded-md transition-all duration-300 group hover:bg-primary hover:text-white hover:scale-105 shadow-md"
+              >
+                <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-md"></span>
+                <User className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-[-20deg] group-hover:scale-125" />
+                <span className="relative z-10">Profile</span>
+              </Button>
 
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="relative overflow-hidden border-2 border-primary text-primary font-semibold px-4 py-2 rounded-md transition-all duration-300 group hover:bg-primary hover:text-white hover:scale-105 shadow-md"
+              >
+                <span className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-md"></span>
+                <LogOut className="h-4 w-4 mr-2 transition-transform duration-300 group-hover:rotate-[-20deg] group-hover:scale-125" />
+                <span className="relative z-10">Logout</span>
+              </Button>
+            </div>
+          </div>
+          
+          {/* Mobile Welcome Text */}
+          <div className="sm:hidden mt-2">
+            <span className="text-xs font-semibold text-primary">Dashboard</span>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-gradient-card shadow-card border-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Attendance</CardTitle>
-              <CheckCircle className="h-4 w-4 text-primary" />
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Mobile-Responsive Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="bg-gradient-card shadow-card border-0 hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium">Total Attendance</CardTitle>
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">{monthlyAttendance.length}</div>
-              <p className="text-xs text-muted-foreground">meals this month</p>
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-primary">{monthlyAttendance.length}</div>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">meals this month</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-card shadow-card border-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Estimated Bill</CardTitle>
-              <IndianRupee className="h-4 w-4 text-secondary" />
+          <Card className="bg-gradient-card shadow-card border-0 hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium">Estimated Bill</CardTitle>
+              <IndianRupee className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-secondary">₹{estimatedBill}</div>
-              <p className="text-xs text-muted-foreground">this month</p>
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className="text-xl sm:text-2xl font-bold text-secondary">₹{estimatedBill}</div>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">this month</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-card shadow-card border-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Today's Status</CardTitle>
-              <Clock className="h-4 w-4 text-accent-foreground" />
+          <Card className="bg-gradient-card shadow-card border-0 hover:shadow-lg transition-shadow sm:col-span-2 md:col-span-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+              <CardTitle className="text-xs sm:text-sm font-medium">Today's Status</CardTitle>
+              <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-accent-foreground" />
             </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${todayAttended ? 'text-green-500' : 'text-primary'}`}>
+            <CardContent className="p-3 sm:p-4 pt-0">
+              <div className={`text-xl sm:text-2xl font-bold ${todayAttended ? 'text-green-500' : 'text-primary'}`}>
                 {todayAttended ? 'Attended' : 'Ready'}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 {todayAttended ? 'attendance marked' : 'to mark attendance'}
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="menu" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+        {/* Mobile-Responsive Main Content Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          {/* Mobile: Dropdown-style tabs */}
+          <div className="block sm:hidden">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full h-12 text-left border-2 border-primary/20 hover:border-primary/40 focus:border-primary bg-background/50">
+                <SelectValue placeholder="Select section">
+                  {activeTab === 'menu' && '📅 Weekly Menu'}
+                  {activeTab === 'attendance' && '📱 QR Attendance'}
+                  {activeTab === 'payment' && '💰 Payment'}
+                  {activeTab === 'feedback' && '💬 Feedback'}
+                  {activeTab === 'leaves' && '🏖️ Leave Request'}
+                  {activeTab === 'notifications' && '🔔 Notifications'}
+                  {activeTab === 'history' && '📊 History'}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="menu">📅 Weekly Menu</SelectItem>
+                <SelectItem value="attendance">📱 QR Attendance</SelectItem>
+                <SelectItem value="payment">� Payment</SelectItem>
+                <SelectItem value="feedback">💬 Feedback</SelectItem>
+                <SelectItem value="leaves">🏖️ Leave Request</SelectItem>
+                <SelectItem value="notifications">� Notifications</SelectItem>
+                <SelectItem value="history">📊 History</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Desktop: Horizontal tabs with scroll */}
+          <div className="hidden sm:block overflow-x-auto scrollbar-hide">
+            <TabsList className="grid w-full grid-cols-7 min-w-[700px] h-12">
             <TabsTrigger value="menu" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               Menu
@@ -405,6 +471,7 @@ export default function Dashboard() {
               History
             </TabsTrigger>
           </TabsList>
+          </div>
 
           <TabsContent value="menu">
             <Card className="bg-gradient-card shadow-elegant border-0">
@@ -514,7 +581,18 @@ export default function Dashboard() {
 
           <TabsContent value="payment">
             <div className="flex justify-center">
-              <PaymentSection userPaymentStatus={paymentStatus} />
+              <PaymentSection 
+                userPaymentStatus={paymentStatus} 
+                payments={payments.map(p => ({
+                  id: p.id,
+                  amount: p.amount,
+                  transactionId: p.transactionId,
+                  paymentMethod: p.paymentMethod || 'online',
+                  status: p.status === 'paid' ? 'verified' : p.status,
+                  createdAt: p.createdAt,
+                  verifiedAt: p.verifiedAt
+                }))}
+              />
             </div>
           </TabsContent>
 
@@ -577,7 +655,10 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="notifications">
-            <NotificationsPanel />
+            <div className="space-y-6">
+              <NotificationsPanel />
+              <AnnouncementsView />
+            </div>
           </TabsContent>
 
           <TabsContent value="history">

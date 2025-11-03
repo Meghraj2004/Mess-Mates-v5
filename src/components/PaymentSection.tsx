@@ -8,24 +8,75 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
-import { Upload, CreditCard, CheckCircle } from 'lucide-react';
+import { Upload, CreditCard, CheckCircle, Download, History } from 'lucide-react';
 
 interface PaymentSectionProps {
   userPaymentStatus?: 'pending' | 'paid' | 'expired' | null;
+  payments?: Array<{
+    id: string;
+    amount: number;
+    transactionId?: string;
+    paymentMethod: 'online' | 'offline';
+    status: 'pending' | 'verified' | 'rejected';
+    createdAt: any;
+    verifiedAt?: any;
+  }>;
 }
 
-export function PaymentSection({ userPaymentStatus }: PaymentSectionProps) {
+export function PaymentSection({ userPaymentStatus, payments = [] }: PaymentSectionProps) {
   const [user] = useAuthState(auth);
   const { toast } = useToast();
   const [transactionId, setTransactionId] = useState('');
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setPaymentScreenshot(file);
     }
+  };
+
+  const handleQRDownload = () => {
+    const qrImage = document.querySelector('img[alt="Payment QR Code"]') as HTMLImageElement;
+    if (!qrImage) {
+      toast({
+        title: "Error",
+        description: "QR Code image not found",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create canvas to convert image to downloadable format
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = qrImage.naturalWidth || 400;
+    canvas.height = qrImage.naturalHeight || 400;
+    
+    ctx.drawImage(qrImage, 0, 0);
+    
+    // Convert to blob and download
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'MessMates-Payment-QR.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Download Complete",
+        description: "QR Code saved to your device",
+      });
+    }, 'image/png');
   };
 
   const handlePaymentSubmission = async () => {
@@ -45,10 +96,11 @@ export function PaymentSection({ userPaymentStatus }: PaymentSectionProps) {
         userId: user.uid,
         userEmail: user.email,
         userName: user.displayName || 'Unknown',
-        amount: 3000,
+        amount: 2600,
         currency: 'INR',
         transactionId: transactionId.trim(),
-        paymentMethod: 'UPI',
+        paymentMethod: 'online',
+        paymentType: 'UPI',
         status: 'pending',
         month: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
         createdAt: serverTimestamp(),
@@ -109,16 +161,28 @@ export function PaymentSection({ userPaymentStatus }: PaymentSectionProps) {
         {userPaymentStatus !== 'paid' && (
           <>
             <div className="text-center">
-              <p className="text-2xl font-bold text-primary">₹3,000</p>
+              <p className="text-2xl font-bold text-primary">₹2,600</p>
               <p className="text-sm text-muted-foreground">Per Month</p>
             </div>
 
             <div className="flex justify-center">
               <img 
-                src="/lovable-uploads/9c7d80ff-4e92-4d0f-acbf-bf36eaa4ddd2.png" 
+                src="assets/QRPay.png" 
                 alt="Payment QR Code"
                 className="w-64 h-64 object-contain border rounded-lg"
               />
+            </div>
+
+            <div className="flex justify-center">
+              <Button
+                onClick={handleQRDownload}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Download QR Code
+              </Button>
             </div>
 
             <div className="text-center text-sm text-muted-foreground">
@@ -161,6 +225,66 @@ export function PaymentSection({ userPaymentStatus }: PaymentSectionProps) {
             <p className="text-sm text-muted-foreground">Your meal service is active</p>
           </div>
         )}
+
+        {/* Payment History Section */}
+        <div className="mt-6 border-t pt-4">
+          <Button
+            onClick={() => setShowHistory(!showHistory)}
+            variant="ghost"
+            className="w-full flex items-center justify-center gap-2"
+          >
+            <History className="h-4 w-4" />
+            Payment History ({payments.length})
+          </Button>
+          
+          {showHistory && (
+            <div className="mt-4 space-y-3 max-h-64 overflow-y-auto">
+              {payments.length > 0 ? (
+                payments.map((payment) => (
+                  <div key={payment.id} className="border rounded-lg p-3 bg-background/50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">₹{payment.amount}</span>
+                        <span 
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            payment.paymentMethod === 'online' 
+                              ? 'bg-blue-100 text-blue-700' 
+                              : 'bg-blue-100 text-blue-700'
+                          }`}
+                        >
+                          {payment.paymentMethod}
+                        </span>
+                        <span 
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            payment.status === 'verified' 
+                              ? 'bg-blue-100 text-blue-700' 
+                              : payment.status === 'rejected'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-yellow-100 text-yellow-700'
+                          }`}
+                        >
+                          {payment.status}
+                        </span>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {payment.createdAt?.toDate?.()?.toLocaleDateString() || 'Recently'}
+                      </div>
+                    </div>
+                    {payment.transactionId && (
+                      <p className="text-xs text-muted-foreground">
+                        Transaction ID: {payment.transactionId}
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>No payment history found</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </CardContent>
 
       {userPaymentStatus !== 'paid' && (

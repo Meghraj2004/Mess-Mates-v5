@@ -123,3 +123,98 @@ Beautiful food-themed colors with modern gradients and animations */
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile-First Responsive Utilities */
+@layer utilities {
+  /* Touch-friendly tap targets */
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Smooth scrolling for mobile */
+  .scroll-smooth-mobile {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Responsive text */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  /* Responsive padding */
+  .p-responsive {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+
+  .px-responsive {
+    @apply px-3 sm:px-4 md:px-6;
+  }
+
+  .py-responsive {
+    @apply py-3 sm:py-4 md:py-6;
+  }
+
+  /* Responsive gaps */
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 md:gap-6;
+  }
+
+  /* Mobile-optimized card */
+  .card-mobile {
+    @apply rounded-lg sm:rounded-xl;
+    @apply p-3 sm:p-4 md:p-6;
+    @apply shadow-sm sm:shadow-md;
+  }
+
+  /* Better touch interactions */
+  .touch-action-manipulation {
+    touch-action: manipulation;
+  }
+
+  /* Prevent text size adjustment on mobile */
+  .text-size-adjust-none {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+}
+
+/* Mobile-specific animations */
+@media (max-width: 640px) {
+  .animate-smooth {
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+/* Improved focus states for accessibility */
+@layer base {
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+}

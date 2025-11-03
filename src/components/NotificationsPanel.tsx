@@ -12,11 +12,16 @@ import { useToast } from '@/hooks/use-toast';
 interface Notification {
   id: string;
   userId: string;
+  userEmail: string;
   type: 'leave_approved' | 'leave_rejected' | 'payment_due' | 'announcement' | 'general';
   title: string;
   message: string;
-  read: boolean;
+  isRead?: boolean;
+  read?: boolean;
+  priority?: 'low' | 'normal' | 'high';
   createdAt: any;
+  createdBy?: string;
+  announcementId?: string;
   data?: any;
 }
 
@@ -29,6 +34,7 @@ export const NotificationsPanel = () => {
   useEffect(() => {
     if (!user) return;
 
+    // Try a simpler query without orderBy first to see if that's causing issues
     const q = query(
       collection(db, 'notifications'),
       where('userId', '==', user.uid)
@@ -40,18 +46,48 @@ export const NotificationsPanel = () => {
         ...doc.data()
       })) as Notification[];
       
+      console.log(`NotificationsPanel: Received ${notificationsData.length} notifications for user ${user.uid}`);
+      console.log('Raw notifications:', notificationsData);
+      
       // Sort by createdAt in descending order (newest first)
       const sortedNotifications = notificationsData.sort((a, b) => {
-        const aTime = a.createdAt?.seconds || 0;
-        const bTime = b.createdAt?.seconds || 0;
+        const aTime = a.createdAt?.seconds || Date.now();
+        const bTime = b.createdAt?.seconds || Date.now();
         return bTime - aTime;
       });
       
+      console.log('Sorted notifications:', sortedNotifications);
       setNotifications(sortedNotifications);
       setLoading(false);
     }, (error) => {
       console.error('Error fetching notifications:', error);
-      setLoading(false);
+      
+      // If the compound query fails, try without orderBy
+      const simpleQuery = query(
+        collection(db, 'notifications'),
+        where('userId', '==', user.uid)
+      );
+      
+      const simpleUnsubscribe = onSnapshot(simpleQuery, (snapshot) => {
+        const notificationsData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Notification[];
+        
+        console.log(`NotificationsPanel (fallback): Received ${notificationsData.length} notifications`);
+        
+        // Sort manually
+        const sortedNotifications = notificationsData.sort((a, b) => {
+          const aTime = a.createdAt?.seconds || 0;
+          const bTime = b.createdAt?.seconds || 0;
+          return bTime - aTime;
+        });
+        
+        setNotifications(sortedNotifications);
+        setLoading(false);
+      });
+      
+      return () => simpleUnsubscribe();
     });
 
     return () => unsubscribe();
@@ -60,7 +96,8 @@ export const NotificationsPanel = () => {
   const markAsRead = async (notificationId: string) => {
     try {
       await updateDoc(doc(db, 'notifications', notificationId), {
-        read: true
+        read: true,
+        isRead: true
       });
     } catch (error) {
       console.error('Error marking notification as read:', error);
@@ -82,7 +119,7 @@ export const NotificationsPanel = () => {
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !n.read && !n.isRead).length;
 
   if (loading) {
     return (
@@ -127,12 +164,14 @@ export const NotificationsPanel = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-3 rounded-lg border transition-colors ${
-                    !notification.read 
+                  className={`p-3 rounded-lg border transition-colors cursor-pointer hover:bg-muted/30 ${
+                    (!notification.read && !notification.isRead)
                       ? 'bg-muted/50 border-primary/20' 
                       : 'bg-background border-border'
+                  } ${
+                    notification.priority === 'high' ? 'border-red-200 bg-red-50/50' : ''
                   }`}
-                  onClick={() => !notification.read && markAsRead(notification.id)}
+                  onClick={() => (!notification.read && !notification.isRead) && markAsRead(notification.id)}
                 >
                   <div className="flex items-start gap-3">
                     {getNotificationIcon(notification.type)}
@@ -150,7 +189,7 @@ export const NotificationsPanel = () => {
                           : notification.createdAt?.toDate?.()?.toLocaleString() || 'Just now'}
                       </div>
                     </div>
-                    {!notification.read && (
+                    {(!notification.read && !notification.isRead) && (
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                     )}
                   </div>

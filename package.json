@@ -1,9 +1,9 @@
 {
-  "name": "messmate-smart-hub",
+  "name": "messmates-v5",
   "private": true,
-  "version": "1.0.0",
-  "description": "A comprehensive mess management system for hostels and organizations",
-  "author": "MessMates Development Team",
+  "version": "5.0.0",
+  "description": "Advanced mess management system with real-time notifications, QR attendance, and payment processing",
+  "author": "Meghraj Dandgavhal <megharajdandgavhal2004@gmail.com>",
   "type": "module",
   "keywords": [
     "mess-management",
@@ -11,17 +11,22 @@
     "QR-attendance",
     "meal-tracking",
     "payment-system",
+    "notifications",
+    "announcements",
+    "real-time",
     "react",
     "typescript",
-    "firebase"
+    "firebase",
+    "vite",
+    "tailwindcss"
   ],
-  "homepage": "https://github.com/Meghraj2004/Mess-Mates-v4#readme",
+  "homepage": "https://github.com/Meghraj2004/Mess-Mates-v5#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Meghraj2004/Mess-Mates-v4.git"
+    "url": "https://github.com/Meghraj2004/Mess-Mates-v5.git"
   },
   "bugs": {
-    "url": "https://github.com/Meghraj2004/Mess-Mates-v4/issues"
+    "url": "https://github.com/Meghraj2004/Mess-Mates-v5/issues"
   },
   "license": "MIT",
   "scripts": {
