@@ -306,7 +306,7 @@ const Index = () => {
             <span className="font-bold text-xl text-primary-foreground">Smart Mess Manager</span>
           </div>
           <p className="text-primary-foreground/60 text-sm">
-            © 2024 Smart Mess Manager. Revolutionizing mess management with technology.
+            © 2025 Smart Mess Manager. Revolutionizing mess management with technology.
           </p>
         </div>
       </footer>
