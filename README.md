@@ -271,13 +271,17 @@ If you encounter any issues or have questions:
 <div align="center">
   <h3>🏠 Landing Page</h3>
   <p><em>Clean and modern interface showcasing key features</em></p>
+  <img width="2334" height="6270" alt="messmates vercel app_" src="https://github.com/user-attachments/assets/135777ac-0f1d-422f-8284-cce929ad9d27" />
+
   
   <h3>📊 User Dashboard</h3>
   <p><em>Personalized dashboard with QR attendance, menu viewing, and payment tracking</em></p>
-  
+  <img width="2334" height="1846" alt="messmates vercel app_ (2)" src="https://github.com/user-attachments/assets/bacaa4f6-d6a8-4ccc-9c6b-b685d735501c" />
+
   <h3>👨‍💼 Admin Dashboard</h3>
   <p><em>Comprehensive admin panel for managing users, menus, and generating reports</em></p>
 </div>
+<img width="2334" height="2600" alt="messmates vercel app_ (1)" src="https://github.com/user-attachments/assets/895c3c5a-a5a6-43d9-a12d-68e3a21ac275" />
 
 ## 🏆 Team
 
