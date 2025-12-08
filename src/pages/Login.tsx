@@ -147,7 +147,7 @@ export default function Login() {
           {/* Footer */}
           <div className="text-center mt-8 space-y-2">
             <p className="text-xs text-muted-foreground">
-              © 2024 MessMates Smart Hub. All rights reserved.
+              © 2025 MessMates Smart Hub. All rights reserved.
             </p>
             <p className="text-xs text-muted-foreground/60">
               Built with React, Firebase & Tailwind CSS
